@@ -25,5 +25,8 @@ class UserService:
         user = get_object_or_404(User, user_name=user_name)
         return model_to_dict(user)
 
-    def delete_user(self, user_id):
-        pass
+    @staticmethod
+    def delete_user(user_id):
+        user = get_object_or_404(User, id=user_id)
+        user.delete()
+        return {'detail': "User deleted"}
