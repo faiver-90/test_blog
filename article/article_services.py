@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from article.models import Article, Category
+from article.schemas import ArticleResponseSchema
 from users.models import User
 
 
@@ -14,31 +15,46 @@ class ArticleService:
             author=user,
             category=category
         )
-        return article
+        return ArticleResponseSchema(
+            id=article.id,
+            title=article.title,
+            content=article.content,
+            author_id=article.author.id,
+            category_id=article.category.id if article.category else None
+        )
 
     def update_article(self, article_id, user_id, data):
         article = get_object_or_404(Article, id=article_id)
 
-        if article.author.id != user_id and not self.is_admin(user_id):
+        if article.author.id != user_id:
             return None
-
-        article.title = data.title
-        article.content = data.content
+        for field, value in data.dict(exclude_unset=True).items():
+            setattr(article, field, value)
         article.save()
-        return article
+
+        return ArticleResponseSchema(
+            id=article.id,
+            title=article.title,
+            content=article.content,
+            author_id=article.author.id,
+            category_id=article.category.id if article.category else None
+        )
 
     def delete_article(self, article_id, user_id):
         article = get_object_or_404(Article, id=article_id)
 
-        if article.author.id != user_id and not self.is_admin(user_id):
+        if article.author.id != user_id:
             return False
 
         article.delete()
         return True
 
     def get_article_by_id(self, article_id):
-        return get_object_or_404(Article, id=article_id)
-
-    def is_admin(self, user_id):
-        user = get_object_or_404(User, id=user_id)
-        return user.role == "admin"
+        article = get_object_or_404(Article, id=article_id)
+        return ArticleResponseSchema(
+            id=article.id,
+            title=article.title,
+            content=article.content,
+            author_id=article.author.id,
+            category_id=article.category.id if article.category else None
+        )

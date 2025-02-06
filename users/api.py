@@ -1,7 +1,9 @@
 from ninja import NinjaAPI, Router
 
+from article.api import article_router
 from auth_custom.api import auth_router
 from auth_custom.sercvices.jwt_service import JWTAuth
+from comments.api import comments_router
 from users.schemas import UserSchema, PartialUserSchema
 from users.user_service import UserService
 
@@ -11,6 +13,8 @@ user_router = Router(tags=['Users'])
 
 api.add_router('/auth', auth_router)
 api.add_router('/user', user_router)
+api.add_router('/article', article_router)
+api.add_router('/comments', comments_router)
 
 
 @user_router.post("/create_user")

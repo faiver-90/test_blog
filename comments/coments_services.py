@@ -19,7 +19,7 @@ class CommentService:
     def update_comment(self, comment_id, user_id, content):
         comment = get_object_or_404(Comment, id=comment_id)
 
-        if comment.author.id != user_id and not self.is_admin(user_id):
+        if comment.author.id != user_id:
             return None
 
         comment.content = content
@@ -29,7 +29,7 @@ class CommentService:
     def delete_comment(self, comment_id, user_id):
         comment = get_object_or_404(Comment, id=comment_id)
 
-        if comment.author.id != user_id and not self.is_admin(user_id):
+        if comment.author.id != user_id:
             return False
 
         comment.delete()
@@ -37,7 +37,3 @@ class CommentService:
 
     def get_comments_by_article(self, article_id):
         return Comment.objects.filter(article_id=article_id)
-
-    def is_admin(self, user_id):
-        user = get_object_or_404(User, id=user_id)
-        return user.role == "admin"
