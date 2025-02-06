@@ -81,17 +81,22 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('NAME_DB'),
+#         'USER': os.getenv('USER_NAME_DB'),
+#         'PASSWORD': os.getenv('PASSWORD_DB'),
+#         'HOST': os.getenv('HOST_DB'),
+#         'PORT': os.getenv('PORT_DB'),
+#     }
+# }
+import dj_database_url
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('NAME_DB'),
-        'USER': os.getenv('USER_NAME_DB'),
-        'PASSWORD': os.getenv('PASSWORD_DB'),
-        'HOST': os.getenv('HOST_DB'),
-        'PORT': os.getenv('PORT_DB'),
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL')  # Берём строку из переменной окружения
+    )
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
