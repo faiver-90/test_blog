@@ -1,13 +1,28 @@
 # Запуск проекта
 
-## Запуск с Docker
+## Запуск с Docker с нуля
 1. Убедитесь, что установлены Docker и Docker Compose.
-2. Создайте `.env` файл с параметрами базы данных. Пример `.env_sample`
-3. Запустите команду:
+2. Клонируйте репозиторий и перейдите в папку проекта:
    ```bash
-   docker-compose up --build - d
+   git clone https://github.com/faiver-90/test_blog.git my_project
+   cd my_project
    ```
-4. Остановка контейнеров:
+3. Создайте `.env` файл с параметрами базы данных. Пример `.env_sample`.
+4. Соберите и запустите контейнеры:
+   ```bash
+   docker-compose up --build -d
+   ```
+5. Примените миграции вручную (если не выполняются автоматически):
+   ```bash
+   docker-compose exec django python manage.py migrate
+   ```
+6. Создайте суперпользователя (если он не был создан автоматически):
+   ```bash
+   docker-compose exec django python manage.py createsuperuser
+   ```
+7. Проверьте, что сервер запущен на `http://localhost:8000`
+
+8. Остановка контейнеров:
    ```bash
    docker-compose down
    ```
@@ -31,7 +46,7 @@
    ```bash
    pip install -r requirements.txt
    ```
-5. Создайте `.env` файл с параметрами базы данных. Пример `.env_sample`
+5. Создайте `.env` файл с параметрами базы данных. Пример `.env_sample`.
 6. Примените миграции:
    ```bash
    python manage.py migrate
@@ -44,10 +59,7 @@
    ```bash
    python manage.py runserver
    ```
-   
-## Данные супер-пользователя для админки
-```bash
-   user_name = admin
-   password = 1234
-```
 
+## Данные суперпользователя для админки
+- `user_name = admin`
+- `password = 1234`
