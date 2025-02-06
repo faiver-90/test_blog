@@ -12,7 +12,7 @@ auth_router = Router(tags=['Auth'])
 jwt_service = get_jwt_service()
 
 
-@auth_router.post("/auth/token", response=TokenSchema)
+@auth_router.post("/token", response=TokenSchema)
 def login(request, data: LoginSchema):
     user = get_object_or_404(User, user_name=data.username, password=data.password)
     if user is None:
@@ -33,7 +33,7 @@ def login(request, data: LoginSchema):
     return {"access_token": access_token, "refresh_token": refresh_token}
 
 
-@auth_router.post("/auth/token/refresh", response=TokenSchema)
+@auth_router.post("/token/refresh", response=TokenSchema)
 def refresh_token(request, data: RefreshTokenSchema):
     try:
         new_access_token = jwt_service.refresh_access_token(data.refresh_token)
@@ -45,7 +45,7 @@ def refresh_token(request, data: RefreshTokenSchema):
         return {"detail": str(e)}, 401
 
 
-@auth_router.get("/auth/validate")
+@auth_router.get("/validate")
 def validate_token(request, token: str):
     try:
         payload = jwt_service.decode_access_token(token)

@@ -32,6 +32,6 @@ class UserService:
     def delete_user(user_id, user_id_req):
         user = get_object_or_404(User, id=user_id)
         if user.id != user_id_req:
-            return JsonResponse({"detail": "Permission denied"}, status=403)
+            return {"detail": "Permission denied"}
         user.delete()
         return {'detail': "User deleted"}

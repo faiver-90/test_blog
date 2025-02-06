@@ -28,7 +28,7 @@ def update_user(request, data: PartialUserSchema):
     return UserService.update_user_by_user_name(user_name, data)
 
 
-@user_router.post("/get_user_by_user_name", auth=JWTAuth())
+@user_router.post("/get_user_by_token", auth=JWTAuth())
 def get_user_by_user_name(request):
     return UserService.get_user_by_user_name(request.auth['user_name'])
 
