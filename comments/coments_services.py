@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from article.models import Article
 from comments.models import Comment
+from comments.schemas import CommentResponseSchema
 from users.models import User
 
 
@@ -14,7 +15,12 @@ class CommentService:
             article=article,
             content=content
         )
-        return comment
+        return CommentResponseSchema(
+            id=comment.id,
+            content=comment.content,
+            author_id=comment.author.id,
+            article_id=comment.article.id
+        )
 
     def update_comment(self, comment_id, user_id, content):
         comment = get_object_or_404(Comment, id=comment_id)
@@ -24,7 +30,12 @@ class CommentService:
 
         comment.content = content
         comment.save()
-        return comment
+        return CommentResponseSchema(
+            id=comment.id,
+            content=comment.content,
+            author_id=comment.author.id,
+            article_id=comment.article.id
+        )
 
     def delete_comment(self, comment_id, user_id):
         comment = get_object_or_404(Comment, id=comment_id)
@@ -36,4 +47,10 @@ class CommentService:
         return True
 
     def get_comments_by_article(self, article_id):
-        return Comment.objects.filter(article_id=article_id)
+        comments = Comment.objects.filter(article_id=article_id)
+        return [CommentResponseSchema(
+            id=comment.id,
+            content=comment.content,
+            author_id=comment.author.id,
+            article_id=comment.article.id
+        ) for comment in comments]

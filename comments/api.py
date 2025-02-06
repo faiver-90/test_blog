@@ -18,7 +18,7 @@ def create_comment(request, article_id: int, data: CommentSchema):
 def update_comment(request, comment_id: int, data: CommentSchema):
     comment = comment_service.update_comment(comment_id, request.auth["user_id"], data.content)
     if not comment:
-        return {"detail": "Permission denied"}, 403
+        return {"detail": "Permission denied"}
     return comment
 
 
@@ -30,6 +30,6 @@ def delete_comment(request, comment_id: int):
     return {"message": "Comment deleted successfully"}
 
 
-@comments_router.get("/get_comments/{article_id}", response=list[CommentResponseSchema])
+@comments_router.get("/get_comments/{article_id}", response=list[CommentResponseSchema], auth=JWTAuth())
 def get_comments(request, article_id: int):
     return comment_service.get_comments_by_article(article_id)
