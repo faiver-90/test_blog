@@ -14,15 +14,19 @@ jwt_service = get_jwt_service()
 
 @auth_router.post("/auth/token", response=TokenSchema)
 def login(request, data: LoginSchema):
-    user = get_object_or_404(User, user_name=data.username)
+    user = get_object_or_404(User, user_name=data.username, password=data.password)
     if user is None:
         return {"detail": "Неверные учетные данные"}, 401
-
+    data_for_token = {
+        "user_id": user.id,
+        "user_role": user.role,
+        "user_name": user.user_name,
+    }
     access_token = jwt_service.create_access_token(
-        {"user_id": user.id, "user_role": user.role, "type": "access"}, expires_in=3600
+        {**data_for_token, "type": "access"}, expires_in=3600
     )
     refresh_token = jwt_service.create_access_token(
-        {"user_id": user.id, "user_role": user.role, "type": "refresh"}, expires_in=86400
+        {**data_for_token, "type": "refresh"}, expires_in=86400
     )
     jwt_service.add_tokens_to_user(access_token, data.username, refresh_token)
 

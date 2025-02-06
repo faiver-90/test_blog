@@ -24,8 +24,8 @@ def update_user(request, user_name, data: PartialUserSchema):
 
 
 @user_router.post("/get_user_by_user_name", auth=JWTAuth())
-def get_user_by_user_name(request, user_name):
-    return UserService.get_user_by_user_name(user_name)
+def get_user_by_user_name(request):
+    return UserService.get_user_by_user_name(request.auth['user_name'])
 
 
 @user_router.delete("/delete_user")
