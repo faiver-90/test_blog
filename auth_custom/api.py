@@ -7,22 +7,22 @@ from auth_custom.schemas import TokenSchema, LoginSchema, RefreshTokenSchema
 from auth_custom.sercvices.jwt_service import get_jwt_service
 from users.models import User
 
-auth_router = Router()
+auth_router = Router(tags=['Auth'])
 
 jwt_service = get_jwt_service()
 
 
 @auth_router.post("/auth/token", response=TokenSchema)
-async def login(request, data: LoginSchema):
+def login(request, data: LoginSchema):
     user = get_object_or_404(User, user_name=data.username)
     if user is None:
         return {"detail": "Неверные учетные данные"}, 401
 
     access_token = jwt_service.create_access_token(
-        {"user_id": user.id, "type": "access"}, expires_in=3600
+        {"user_id": user.id, "user_role": user.role, "type": "access"}, expires_in=3600
     )
     refresh_token = jwt_service.create_access_token(
-        {"user_id": user.id, "type": "refresh"}, expires_in=86400
+        {"user_id": user.id, "user_role": user.role, "type": "refresh"}, expires_in=86400
     )
     jwt_service.add_tokens_to_user(access_token, data.username, refresh_token)
 
@@ -30,7 +30,7 @@ async def login(request, data: LoginSchema):
 
 
 @auth_router.post("/auth/token/refresh", response=TokenSchema)
-async def refresh_token(request, data: RefreshTokenSchema):
+def refresh_token(request, data: RefreshTokenSchema):
     try:
         new_token = jwt_service.refresh_access_token(data.refresh_token)
         return new_token
@@ -39,7 +39,7 @@ async def refresh_token(request, data: RefreshTokenSchema):
 
 
 @auth_router.get("/auth/validate")
-async def validate_token(request, token: str):
+def validate_token(request, token: str):
     try:
         payload = jwt_service.decode_access_token(token)
         return {"valid": True, "payload": payload}

@@ -6,8 +6,8 @@ from users.models import User
 
 class UserService:
     @staticmethod
-    def create_user(user_name, password):
-        user = User.objects.create(user_name=user_name, password=password)
+    def create_user(user_name, password, role):
+        user = User.objects.create(user_name=user_name, password=password, role=role)
         user.save()
         return {'detail': "User created"}
 

@@ -48,7 +48,7 @@ class JWTService:
         return {"access_token": new_access_token}
 
     def add_tokens_to_user(self, token, user_name, refresh_token=None):
-        user = get_object_or_404(User, user_name)
+        user = get_object_or_404(User, user_name=user_name)
         user.token = token
         if refresh_token:
             user.refresh_token = refresh_token
