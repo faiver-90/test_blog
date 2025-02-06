@@ -1,9 +1,11 @@
 from ninja import NinjaAPI
 
+from auth_custom.api import auth_router
 from users.schemas import UserSchema, PartialUserSchema
 from users.user_service import UserService
 
 user_api = NinjaAPI()
+user_api.add_router('/auth', auth_router)
 
 
 @user_api.post("/create_user")

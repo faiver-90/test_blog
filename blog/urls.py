@@ -21,5 +21,5 @@ from users.api import user_api
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("api/", user_api.urls),
+    path("user_api/", user_api.urls)
 ]
