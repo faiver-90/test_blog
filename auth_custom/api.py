@@ -36,8 +36,11 @@ def login(request, data: LoginSchema):
 @auth_router.post("/auth/token/refresh", response=TokenSchema)
 def refresh_token(request, data: RefreshTokenSchema):
     try:
-        new_token = jwt_service.refresh_access_token(data.refresh_token)
-        return new_token
+        new_access_token = jwt_service.refresh_access_token(data.refresh_token)
+        return {
+            "access_token": new_access_token["access_token"],
+            "refresh_token": data.refresh_token
+        }
     except HTTPException as e:
         return {"detail": str(e)}, 401
 
