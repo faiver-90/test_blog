@@ -30,6 +30,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'testblog-production-e0f1.up.railway.app',
+    '127.0.0.1'
+]
+CSRF_TRUSTED_ORIGINS = [
+    'https://testblog-production-e0f1.up.railway.app',  # Ваш домен
 ]
 
 # Application definition
