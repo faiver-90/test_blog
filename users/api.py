@@ -1,6 +1,7 @@
 from ninja import NinjaAPI, Router
 
 from auth_custom.api import auth_router
+from auth_custom.sercvices.jwt_service import JWTAuth
 from users.schemas import UserSchema, PartialUserSchema
 from users.user_service import UserService
 
@@ -22,7 +23,7 @@ def update_user(request, user_name, data: PartialUserSchema):
     return UserService.update_user_by_user_name(user_name, data)
 
 
-@user_router.post("/get_user_by_user_name")
+@user_router.post("/get_user_by_user_name", auth=JWTAuth())
 def get_user_by_user_name(request, user_name):
     return UserService.get_user_by_user_name(user_name)
 

@@ -3,8 +3,10 @@ from datetime import datetime, timedelta
 from http.client import HTTPException
 
 import jwt
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from dotenv import load_dotenv
+from ninja.security import HttpBearer
 
 from users.models import User
 
@@ -55,5 +57,18 @@ class JWTService:
         user.save()
 
 
+class JWTAuth(HttpBearer):
+    def authenticate(self, request, token):
+        try:
+            payload = jwt_service.decode_access_token(token)
+            request.auth = payload
+            return payload
+        except Exception as e:
+            return JsonResponse({"detail": "Invalid token", "error": str(e)}, status=401)
+
+
 def get_jwt_service() -> JWTService:
     return JWTService(JWT_SECRET_KEY, JWT_ALGORITHM)
+
+
+jwt_service = get_jwt_service()
