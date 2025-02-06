@@ -20,7 +20,8 @@ def create_user(request, data: UserSchema):
 
 @user_router.put("/update_user", auth=JWTAuth())
 def update_user(request, data: PartialUserSchema):
-    return UserService.update_user_by_user_name(request.auth['user_name'], data)
+    user_name = request.auth['user_name']
+    return UserService.update_user_by_user_name(user_name, data)
 
 
 @user_router.post("/get_user_by_user_name", auth=JWTAuth())
@@ -28,6 +29,7 @@ def get_user_by_user_name(request):
     return UserService.get_user_by_user_name(request.auth['user_name'])
 
 
-@user_router.delete("/delete_user", auth=JWTAuth())
+@user_router.delete("/delete_user/{user_id}", auth=JWTAuth())
 def delete_user(request, user_id):
-    return UserService.delete_user(user_id)
+    user_id_req = request.auth['user_id']
+    return UserService.delete_user(user_id, user_id_req)

@@ -1,4 +1,5 @@
 from django.forms import model_to_dict
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 from users.models import User
@@ -14,6 +15,8 @@ class UserService:
     @staticmethod
     def update_user_by_user_name(user_name, data):
         user = get_object_or_404(User, user_name=user_name)
+        if user_name != data.user_name:
+            return JsonResponse({"detail": "Permission denied"}, status=403)
 
         for field, value in data.dict(exclude_unset=True).items():
             setattr(user, field, value)
@@ -26,7 +29,9 @@ class UserService:
         return model_to_dict(user)
 
     @staticmethod
-    def delete_user(user_id):
+    def delete_user(user_id, user_id_req):
         user = get_object_or_404(User, id=user_id)
+        if user.id != user_id_req:
+            return JsonResponse({"detail": "Permission denied"}, status=403)
         user.delete()
         return {'detail': "User deleted"}

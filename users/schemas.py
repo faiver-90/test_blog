@@ -9,3 +9,4 @@ class UserSchema(BaseModel):
 
 class PartialUserSchema(BaseModel):
     password: str | None = None
+    user_name: str
